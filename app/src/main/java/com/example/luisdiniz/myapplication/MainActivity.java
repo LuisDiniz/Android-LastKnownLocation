@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -18,6 +19,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
+    private TextView mLatitude;
+    private TextView mLongitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +35,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     .addApi(LocationServices.API)
                     .build();
         }
+
+        mLatitude = (TextView) findViewById(R.id.latitudeText);
+        mLongitude = (TextView) findViewById(R.id.longitudeText);
 
     }
 
@@ -49,25 +55,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onConnected(Bundle connectionHint) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null) {
-            //mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
-            //mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
-            Toast toast = Toast.makeText(this, "Latitude: "+ String.valueOf(mLastLocation.getLatitude()) + ". Longitude: "+ String.valueOf(mLastLocation.getLongitude()), Toast.LENGTH_SHORT);
-            toast.show();
+            mLatitude.setText(String.valueOf(mLastLocation.getLatitude()));
+            mLongitude.setText(String.valueOf(mLastLocation.getLongitude()));
         }
         else{
-            Toast toast = Toast.makeText(this, "Não Funcionou", Toast.LENGTH_SHORT);
-            toast.show();
+            mLatitude.setText("Indisponível");
+            mLongitude.setText("Indisponível");
         }
     }
 
